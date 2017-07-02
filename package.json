@@ -1,6 +1,6 @@
 {
   "name": "z-vuestrap2",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Bootstrap components for Vue 2",
   "main": "index.js",
   "scripts": {
