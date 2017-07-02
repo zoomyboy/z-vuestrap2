@@ -1,8 +1,8 @@
 <template>
 	<span class="popover-wrap" ref="wrapper">
-		<div :class="['popover', 'popover-'+look]" ref="popover" :style="{'display': realVisible, 'width': width+'px', 'top': top+'px', 'left': left+'px'}">
+		<div :class="['popover', 'popover-'+look, realArrowClass]" ref="popover" :style="{'display': 'block', display: realDisplay, 'width': width+'px', 'top': top+'px', 'left': left+'px'}">
 			<div class="popover-title" v-if="title != undefined">
-				{{ title }}
+				<span class="realtitle">{{ title }}</span><span class="close fa fa-close" @click="visible = false"></span>
 			</div>
 			<div class="popover-content" v-if="content != undefined">
 				{{ content }}
@@ -18,11 +18,22 @@
 	@import '~bootstrap/less/mixins/alerts.less';
 
 	.v-popover-variant(@bg, @border, @text) {
+		z-index: 111;
   		.alert-variant(@bg, @border, @text);
 		.popover-title {
 			font-weight: bold;
 			background: @bg;
 			border-bottom: 1px solid @border;
+			display: flex;
+			justify-content: space-between;
+			flex-direction: row;
+			.close {
+				color: @text;
+				opacity: 0.8;
+				&:hover {
+					opacity: 1;
+				}
+			}
 		}
 		&:after, &:before {
 			top: 100%;
@@ -81,7 +92,9 @@
 			return {
 				left: 0,
 				top: 0,
-				visible: false
+				visible: false,
+				arrowClass: false,
+				arrowRules: []
 			}
 		},
 		props: {
@@ -94,7 +107,7 @@
 				default: undefined,
 			},
 			width: {
-				default: 200,
+				default: 250,
 				typee: Number,
 				required: false
 			},
@@ -104,8 +117,11 @@
 			}
 		},
 		computed: {
-			realVisible: function() {
+			realDisplay: function() {
 				return (this.visible) ? 'block' : 'none';
+			},
+			realArrowClass: function() {
+				return this.arrowClass ? this.arrowClass : '';
 			}
 		},
 		methods: {
@@ -116,8 +132,42 @@
 				});
 			},
 			setPosition: function() {
-				this.left = ($(this.$refs.popover).width()/2-$(this.$refs.popover).next().width()-2) * -1;
-				this.top = ($(this.$refs.popover).height() + 19) * -1;
+				var vm = this;
+
+				if (vm.arrowClass && vm.arrowRules.length) {
+					vm.arrowClass = false;
+					this.purgeRules();
+				}
+
+				var popoverWidth = $(this.$refs.popover).outerWidth();
+				var popoverHeight = $(this.$refs.popover).outerHeight();
+				var togglerOffset = $(this.$refs.popover).next().offset();
+				var togglerWidth = $(this.$refs.popover).next().outerWidth();
+				var togglerHeight = $(this.$refs.popover).next().outerHeight();
+
+				this.left = (popoverWidth * -1) / 2 + togglerWidth / 2;
+				this.top = (popoverHeight + 15) * -1;
+
+				if (togglerOffset.left + (togglerWidth + popoverWidth) / 2 + 10 > $(window).width()) {
+					this.left = $(window).width() - togglerOffset.left - popoverWidth - 10;
+					var popoverOffset = $(this.$refs.popover).offset();
+					var arrowPosition = (togglerOffset.left - $(window).width() + 10 + popoverWidth + togglerWidth / 2) + 'px';
+
+					vm.arrowClass = 'arrow-' + Math.random().toString(36).substr(2,10);
+
+					vm.insertRule('.'+vm.arrowClass+'::before {left: '+arrowPosition+' !important}', 0);
+					vm.insertRule('.'+vm.arrowClass+'::after {left: '+arrowPosition+' !important}', 1);
+				}
+
+			},
+			insertRule: function(rule, index) {
+				this.arrowRules.push(document.styleSheets[0].insertRule(rule, 0));
+			},
+			purgeRules: function() {
+				this.arrowRules.forEach(function(rule) {
+					document.styleSheets[0].deleteRule(rule);
+				});
+				this.arrowRules = [];
 			}
 		},
 		mounted: function() {
@@ -127,8 +177,10 @@
 				vm.show();
 			});
 
-			this.$on('setposition', function() {
-				vm.setPosition();
+			this.$events.on('windowwidth', function(width) {
+				if (vm.visible) {
+					vm.setPosition();
+				}
 			});
 		}
 	}
