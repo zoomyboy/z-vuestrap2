@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/zoomyboy/z-vuestrap2/issues"
   },
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  },
   "homepage": "https://github.com/zoomyboy/z-vuestrap2#readme"
 }
