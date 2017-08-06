@@ -14,76 +14,32 @@
 </template>
 
 <style lang="less">
-	@import '~bootstrap/less/variables.less';
-	@import '~bootstrap/less/mixins/alerts.less';
+	@import "~vuestrapStyle.less";
 
-	.v-popover-variant(@bg, @border, @text) {
-		z-index: 111;
-  		.alert-variant(@bg, @border, @text);
-		.popover-title {
-			font-weight: bold;
-			background: @bg;
-			border-bottom: 1px solid @border;
-			display: flex;
-			justify-content: space-between;
-			flex-direction: row;
-			.close {
-				color: @text;
-				opacity: 0.8;
-				&:hover {
-					opacity: 1;
-				}
-			}
-		}
-		&:after, &:before {
-			top: 100%;
-			left: 50%;
-			border: solid transparent;
-			content: " ";
-			height: 0;
-			width: 0;
-			position: absolute;
-			pointer-events: none;
-		}
-		&:after {
-			border-color: rgba(255, 255, 255, 0);
-			border-top-color: @bg;
-			border-width: 15px;
-			margin-left: -15px;
-		}
-		&:before {
-			border-color: rgba(187, 187, 187, 0);
-			border-top-color: @border;
-			border-width: 16px;
-			margin-left: -16px;
-		}
+	.popover-wrap {
+		position: relative;
 	}
 
-	.btn-group span.popover-wrap {
-		display: inline-block;
-		&:not(:first-child) button {
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-		}
-		&:not(:last-child) button {
-			border-top-right-radius: 0;
-			border-bottom-right-radius: 0;
-		}
-		.popover.popover-danger {
-			.v-popover-variant(@alert-danger-bg; @alert-danger-border; @alert-danger-text);
-		}
+	.popover-default {
+		.v-popover-variant(@popover-default-bg, @popover-default-border, @popover-default-text);
 	}
-	.btn-group .btn + .popover-wrap, .btn-group .popover-wrap + .btn {
-		margin-left: -1px;
-		position: relative;
-		&:hover {
-			z-index: 2;
-		}
+
+	.popover-info {
+		.v-popover-variant(@popover-info-bg, @popover-info-border, @popover-info-text);
 	}
-	.btn-group .popover-wrap:first-child:hover {
-		position: relative;
-		z-index: 2;
+
+	.popover-warning {
+		.v-popover-variant(@popover-warning-bg, @popover-warning-border, @popover-warning-text);
 	}
+
+	.popover-success {
+		.v-popover-variant(@popover-success-bg, @popover-success-border, @popover-success-text);
+	}
+
+	.popover-danger {
+		.v-popover-variant(@popover-danger-bg, @popover-danger-border, @popover-danger-text);
+	}
+
 </style>
 
 <script>
