@@ -17,7 +17,7 @@
 	@import "~vuestrapStyle.less";
 
 	.popover-wrap {
-		position: relative;
+		position: relative !important;
 	}
 
 	.popover-default {
